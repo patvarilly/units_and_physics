@@ -14,4 +14,4 @@ Installation
 Documentation
 -------------
 
-See docs/_build/index.html
+See docs/_build/html/index.html
