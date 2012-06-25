@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>physics &mdash; Units and physical constants v1.0 Reference Guide (DRAFT)</title>
+    
+    <link rel="stylesheet" href="../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Units and physical constants v1.0 Reference Guide (DRAFT)" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Units and physical constants v1.0 Reference Guide (DRAFT)</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for physics</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2012 Patrick Varilly</span>
+<span class="c">#</span>
+<span class="c">#    This program is free software: you can redistribute it and/or modify</span>
+<span class="c">#    it under the terms of the GNU General Public License as published by</span>
+<span class="c">#    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">#    (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c">#    This program is distributed in the hope that it will be useful,</span>
+<span class="c">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">#    GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c">#    You should have received a copy of the GNU General Public License</span>
+<span class="c">#    along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">==========================================================================</span>
+<span class="sd">Common physical constants in :mod:`correct units &lt;units&gt;` (:mod:`physics`)</span>
+<span class="sd">==========================================================================</span>
+
+<span class="sd">Fundamental constants</span>
+<span class="sd">+++++++++++++++++++++</span>
+
+<span class="sd">.. autodata:: c</span>
+<span class="sd">.. autodata:: mu_0</span>
+<span class="sd">.. autodata:: eps_0</span>
+<span class="sd">.. autodata:: N_A</span>
+<span class="sd">.. autodata:: kB</span>
+<span class="sd">.. autodata:: R</span>
+
+<span class="sd">Atomic and Nuclear Physics</span>
+<span class="sd">++++++++++++++++++++++++++</span>
+
+<span class="sd">.. autodata:: e</span>
+<span class="sd">.. autodata:: eV</span>
+<span class="sd">.. autodata:: amu</span>
+<span class="sd">.. autodata:: m_e</span>
+<span class="sd">.. autodata:: a_0</span>
+<span class="sd">.. autodata:: D</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">units</span>
+
+<span class="n">_GSL_CONST_MKSA_SPEED_OF_LIGHT</span> <span class="o">=</span> <span class="mf">2.99792458e8</span>  <span class="c"># m / s</span>
+<span class="n">_GSL_CONST_MKSA_VACUUM_PERMITTIVITY</span> <span class="o">=</span> <span class="mf">8.854187817e-12</span>  <span class="c"># A^2 s^4 / kg m^3</span>
+<span class="n">_GSL_CONST_MKSA_VACUUM_PERMEABILITY</span> <span class="o">=</span> <span class="mf">1.25663706144e-6</span>  <span class="c"># kg m / A^2 s^2</span>
+<span class="n">_GSL_CONST_NUM_AVOGADRO</span> <span class="o">=</span> <span class="mf">6.02214199e23</span>  <span class="c"># 1 / mol</span>
+<span class="n">_GSL_CONST_MKSA_BOLTZMANN</span> <span class="o">=</span> <span class="mf">1.3806504e-23</span>  <span class="c"># kg m^2 / K s^2</span>
+<span class="n">_GSL_CONST_MKSA_MOLAR_GAS</span> <span class="o">=</span> <span class="mf">8.314472e0</span>  <span class="c"># kg m^2 / K mol s^2</span>
+<span class="n">_GSL_CONST_MKSA_ELECTRON_CHARGE</span> <span class="o">=</span> <span class="mf">1.602176487e-19</span>  <span class="c"># A s</span>
+<span class="n">_GSL_CONST_MKSA_ELECTRON_VOLT</span> <span class="o">=</span> <span class="mf">1.602176487e-19</span>  <span class="c"># kg m^2 / s^2</span>
+<span class="n">_GSL_CONST_MKSA_UNIFIED_ATOMIC_MASS</span> <span class="o">=</span> <span class="mf">1.660538782e-27</span>  <span class="c"># kg</span>
+<span class="n">_GSL_CONST_MKSA_MASS_ELECTRON</span> <span class="o">=</span> <span class="mf">9.10938188e-31</span>  <span class="c"># kg</span>
+<span class="n">_GSL_CONST_MKSA_BOHR_RADIUS</span> <span class="o">=</span> <span class="mf">5.291772083e-11</span>  <span class="c"># m</span>
+<span class="n">_GSL_CONST_MKSA_DEBYE</span> <span class="o">=</span> <span class="mf">3.33564095198e-30</span>  <span class="c"># A s^2 / m^2</span>
+
+<span class="c"># Fundamental constants</span>
+<span class="c"># =====================</span>
+
+<span class="c">#: Speed of light in vacuum</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_SPEED_OF_LIGHT</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">m</span> <span class="o">/</span> <span class="n">units</span><span class="o">.</span><span class="n">s</span>
+
+<span class="c">#: Permeability of free space, :math:`\mu_0`</span>
+<span class="n">mu_0</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_VACUUM_PERMEABILITY</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">N</span> <span class="o">/</span> <span class="n">units</span><span class="o">.</span><span class="n">Ampere</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="c">#: Permittivity of free space, :math:`\epsilon_0`</span>
+<span class="n">eps_0</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_VACUUM_PERMITTIVITY</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">F</span> <span class="o">/</span> <span class="n">units</span><span class="o">.</span><span class="n">m</span>
+
+<span class="c">#: Avogadro&#39;s number</span>
+<span class="n">N_A</span> <span class="o">=</span> <span class="n">_GSL_CONST_NUM_AVOGADRO</span>
+
+<span class="c">#: Boltzmann&#39;s constant</span>
+<span class="n">kB</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_BOLTZMANN</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">J</span> <span class="o">/</span> <span class="n">units</span><span class="o">.</span><span class="n">K</span>
+
+<span class="c">#: Gas constant (numerically identical to kB in base units!)</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_MOLAR_GAS</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">J</span> <span class="o">/</span> <span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">mol</span><span class="p">)</span>
+
+
+<span class="c"># Atomic and Nuclear Physics</span>
+<span class="c"># ==========================</span>
+
+<span class="c">#: Electron charge</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_ELECTRON_CHARGE</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">C</span>
+
+<span class="c">#: Electron volt</span>
+<span class="n">eV</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_ELECTRON_VOLT</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">J</span>
+
+<span class="c">#: Atomic mass unit</span>
+<span class="n">amu</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_UNIFIED_ATOMIC_MASS</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">kg</span>
+
+<span class="c">#: Mass of electron</span>
+<span class="n">m_e</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_MASS_ELECTRON</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">kg</span>
+
+<span class="c">#: Bohr radius</span>
+<span class="n">a_0</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_BOHR_RADIUS</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">m</span>
+
+<span class="c">#: Debye</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_DEBYE</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">C</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">m</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Units and physical constants v1.0 Reference Guide (DRAFT)</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Patrick Varilly.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

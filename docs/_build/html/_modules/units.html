@@ -1,0 +1,422 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>units &mdash; Units and physical constants v1.0 Reference Guide (DRAFT)</title>
+    
+    <link rel="stylesheet" href="../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Units and physical constants v1.0 Reference Guide (DRAFT)" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Units and physical constants v1.0 Reference Guide (DRAFT)</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for units</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2012 Patrick Varilly</span>
+<span class="c">#</span>
+<span class="c">#    This program is free software: you can redistribute it and/or modify</span>
+<span class="c">#    it under the terms of the GNU General Public License as published by</span>
+<span class="c">#    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">#    (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c">#    This program is distributed in the hope that it will be useful,</span>
+<span class="c">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">#    GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c">#    You should have received a copy of the GNU General Public License</span>
+<span class="c">#    along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">=================================================================</span>
+<span class="sd">Consistent units definitions for molecular systems (:mod:`units`)</span>
+<span class="sd">=================================================================</span>
+
+<span class="sd">.. currentmodule:: units</span>
+
+<span class="sd">The internal base units are GROMACS units, which are useful,</span>
+<span class="sd">consistent, and internally yield numbers that are close to 1 in</span>
+<span class="sd">most atomistic setups:</span>
+
+<span class="sd">- Length = nm</span>
+<span class="sd">- Mass = amu</span>
+<span class="sd">- Time = ps (together yield natural energy unit of kJ/mol)</span>
+<span class="sd">- Current = e / ps</span>
+<span class="sd">- Temperature = K</span>
+
+<span class="sd">Electrostatic formulas have all the usual SI prefactors.  We don&#39;t</span>
+<span class="sd">bother with the units relating to light (cd and related units) since</span>
+<span class="sd">they are mostly irrelevant for condensed matter simulations.</span>
+
+<span class="sd">Initially, we express the SI base units in terms of GROMACS units,</span>
+<span class="sd">then derive all other units from them.  For internal convenience,</span>
+<span class="sd">we actually use g instead of kg for defining masses.</span>
+
+<span class="sd">Almost all unit definitions also set up the related prefixed units</span>
+<span class="sd">from femto-X to tera-X.</span>
+
+<span class="sd">Whenever you read in a unitful quantity from the user, multiply</span>
+<span class="sd">it by the relevant units.  For example,</span>
+
+<span class="sd">   &gt;&gt;&gt; myLength = fields[5] * units.nm</span>
+
+<span class="sd">Whenever you output unitful quantities, divide by the units you want</span>
+<span class="sd">to use.  For example,</span>
+
+<span class="sd">   &gt;&gt;&gt; print(&quot;Total energy = %.2f kcal/mol&quot; %</span>
+<span class="sd">             (E / (units.kcal / units.mol)))</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">  The unit &quot;Celsius&quot; is not defined explicitly to not confuse it with</span>
+<span class="sd">  &quot;Coulombs&quot;.</span>
+
+<span class="sd">Base units</span>
+<span class="sd">++++++++++</span>
+
+<span class="sd">All of these can be prefixed with the usual SI prefixes, e.g. ``nm`` for</span>
+<span class="sd">nanometer.</span>
+
+<span class="sd">.. autodata:: m</span>
+<span class="sd">.. autodata:: g</span>
+<span class="sd">.. autodata:: s</span>
+<span class="sd">.. autodata:: Ampere</span>
+<span class="sd">.. autodata:: K</span>
+<span class="sd">.. autodata:: mol</span>
+
+<span class="sd">By default, the unit for Amperes is :data:`.Ampere`, not ``A`` as usual.</span>
+<span class="sd">To change this behaviour, call :func:`.add_amperes_unit`.</span>
+
+<span class="sd">.. autofunction:: add_amperes_unit</span>
+
+<span class="sd">Derived units</span>
+<span class="sd">+++++++++++++</span>
+
+<span class="sd">Most of these can also be prefixed with the usual SI prefixes, e.g. ``pN``</span>
+<span class="sd">for pico-Newton.</span>
+
+<span class="sd">.. autodata:: Hz</span>
+<span class="sd">.. autodata:: rad</span>
+<span class="sd">.. autodata:: sr</span>
+<span class="sd">.. autodata:: N</span>
+<span class="sd">.. autodata:: Pa</span>
+<span class="sd">.. autodata:: J</span>
+<span class="sd">.. autodata:: W</span>
+<span class="sd">.. autodata:: C</span>
+<span class="sd">.. autodata:: V</span>
+<span class="sd">.. autodata:: F</span>
+<span class="sd">.. autodata:: Ohm</span>
+<span class="sd">.. autodata:: S</span>
+<span class="sd">.. autodata:: Wb</span>
+<span class="sd">.. autodata:: T</span>
+<span class="sd">.. autodata:: H</span>
+
+<span class="sd">Non-SI units</span>
+<span class="sd">++++++++++++</span>
+
+<span class="sd">.. autodata:: min</span>
+<span class="sd">.. autodata:: h</span>
+<span class="sd">.. autodata:: d</span>
+<span class="sd">.. autodata:: degree</span>
+<span class="sd">.. autodata:: arcmin</span>
+<span class="sd">.. autodata:: arcsec</span>
+<span class="sd">.. autodata:: ha</span>
+<span class="sd">.. autodata:: L</span>
+<span class="sd">.. autodata:: t</span>
+
+<span class="sd">Physics units</span>
+<span class="sd">+++++++++++++</span>
+
+<span class="sd">Some units which are more properly considered physical constants are</span>
+<span class="sd">defined in the :mod:`.physics` module.</span>
+
+<span class="sd">.. autodata:: G</span>
+<span class="sd">.. autodata:: bar</span>
+<span class="sd">.. autodata:: atm</span>
+<span class="sd">.. autodata:: Torr</span>
+<span class="sd">.. autodata:: mmHg</span>
+<span class="sd">.. autodata:: P</span>
+
+<span class="sd">Chemistry units</span>
+<span class="sd">+++++++++++++++</span>
+
+<span class="sd">Units that pop up regularly in chemistry.</span>
+
+<span class="sd">.. autodata:: AA</span>
+<span class="sd">.. autodata:: cal</span>
+<span class="sd">.. autodata:: kcal</span>
+<span class="sd">.. autodata:: M</span>
+<span class="sd">.. autodata:: cc</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
+
+<span class="n">_GSL_CONST_MKSA_UNIFIED_ATOMIC_MASS</span> <span class="o">=</span> <span class="mf">1.660538782e-27</span>  <span class="c"># kg</span>
+<span class="n">_GSL_CONST_MKSA_ELECTRON_CHARGE</span> <span class="o">=</span> <span class="mf">1.602176487e-19</span>  <span class="c"># A s</span>
+<span class="n">_GSL_CONST_NUM_AVOGADRO</span> <span class="o">=</span> <span class="mf">6.02214199e23</span>  <span class="c"># 1 / mol</span>
+<span class="n">_GSL_CONST_MKSA_GAUSS</span> <span class="o">=</span> <span class="mf">1e-4</span>  <span class="c"># kg / A s^2</span>
+<span class="n">_GSL_CONST_MKSA_BAR</span> <span class="o">=</span> <span class="mf">1e5</span>  <span class="c"># kg / m s^2</span>
+<span class="n">_GSL_CONST_MKSA_STD_ATMOSPHERE</span> <span class="o">=</span> <span class="mf">1.01325e5</span>  <span class="c"># kg / m s^2</span>
+<span class="n">_GSL_CONST_MKSA_TORR</span> <span class="o">=</span> <span class="mf">1.33322368421e2</span>  <span class="c"># kg / m s^2</span>
+<span class="n">_GSL_CONST_MKSA_METER_OF_MERCURY</span> <span class="o">=</span> <span class="mf">1.33322368421e5</span>  <span class="c"># kg / m s^2</span>
+
+<span class="c">#: Meter</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mf">1e9</span>
+<span class="c">#: Gram</span>
+<span class="n">g</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">/</span> <span class="n">_GSL_CONST_MKSA_UNIFIED_ATOMIC_MASS</span>
+<span class="c">#: Second</span>
+<span class="n">s</span> <span class="o">=</span> <span class="mf">1e12</span>
+<span class="c">#: Ampere</span>
+<span class="n">Ampere</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">_GSL_CONST_MKSA_ELECTRON_CHARGE</span><span class="p">)</span> <span class="o">/</span> <span class="n">s</span>
+<span class="c">#: Kelvin</span>
+<span class="n">K</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="c">#: mole</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">_GSL_CONST_NUM_AVOGADRO</span>
+
+<div class="viewcode-block" id="add_amperes_unit"><a class="viewcode-back" href="../index.html#units.add_amperes_unit">[docs]</a><span class="k">def</span> <span class="nf">add_amperes_unit</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Define ``A`` as the unit Ampere.</span>
+
+<span class="sd">    By default, this definition is disabled to avoid accidental mixups with</span>
+<span class="sd">    the unit for Angstroms (:data:`.AA`).  This mixup can result in some</span>
+<span class="sd">    thoroughly puzzling bugs.&quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">A</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">Ampere</span>
+
+</div>
+<span class="n">_SI_prefixes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;f&#39;</span><span class="p">:</span> <span class="mf">1e-15</span><span class="p">,</span>
+    <span class="s">&#39;p&#39;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">,</span>
+    <span class="s">&#39;n&#39;</span><span class="p">:</span> <span class="mf">1e-9</span><span class="p">,</span>
+    <span class="s">&#39;u&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span>
+    <span class="s">&#39;m&#39;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">,</span>
+    <span class="s">&#39;c&#39;</span><span class="p">:</span> <span class="mf">1e-2</span><span class="p">,</span>
+    <span class="s">&#39;d&#39;</span><span class="p">:</span> <span class="mf">1e-1</span><span class="p">,</span>
+    <span class="s">&#39;da&#39;</span><span class="p">:</span> <span class="mf">1e+1</span><span class="p">,</span>
+    <span class="s">&#39;h&#39;</span><span class="p">:</span> <span class="mf">1e+2</span><span class="p">,</span>
+    <span class="s">&#39;k&#39;</span><span class="p">:</span> <span class="mf">1e+3</span><span class="p">,</span>
+    <span class="s">&#39;M&#39;</span><span class="p">:</span> <span class="mf">1e+6</span><span class="p">,</span>
+    <span class="s">&#39;G&#39;</span><span class="p">:</span> <span class="mf">1e+9</span><span class="p">,</span>
+    <span class="s">&#39;T&#39;</span><span class="p">:</span> <span class="mf">1e+12</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">_add_prefixes</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">realname</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add standard SI prefixes to a base unit.&quot;&quot;&quot;</span>
+    <span class="n">globs</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">globs</span><span class="p">[</span><span class="n">realname</span> <span class="ow">or</span> <span class="n">name</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">_SI_prefixes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">globs</span><span class="p">[</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span> <span class="o">*</span> <span class="n">val</span>
+
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;m&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;g&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;s&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;Ampere&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;K&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;mol&#39;</span><span class="p">)</span>
+
+<span class="c"># Named derived units, after</span>
+<span class="c"># http://en.wikipedia.org/wiki/SI_derived_unit</span>
+
+<span class="c">#: Hertz</span>
+<span class="n">Hz</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">s</span>
+<span class="c">#: Radian</span>
+<span class="n">rad</span> <span class="o">=</span> <span class="n">m</span> <span class="o">/</span> <span class="n">m</span>              
+<span class="c">#: Steradian</span>
+<span class="n">sr</span> <span class="o">=</span> <span class="n">m</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">m</span> <span class="o">**</span> <span class="mi">2</span>     
+<span class="c">#: Newton</span>
+<span class="n">N</span> <span class="o">=</span> <span class="n">kg</span> <span class="o">*</span> <span class="n">m</span> <span class="o">/</span> <span class="n">s</span> <span class="o">**</span> <span class="mi">2</span>      
+<span class="c">#: Pascal</span>
+<span class="n">Pa</span> <span class="o">=</span> <span class="n">N</span> <span class="o">/</span> <span class="n">m</span> <span class="o">**</span> <span class="mi">2</span>          
+<span class="c">#: Joule</span>
+<span class="n">J</span> <span class="o">=</span> <span class="n">N</span> <span class="o">*</span> <span class="n">m</span>                
+<span class="c">#: Watt</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">J</span> <span class="o">/</span> <span class="n">s</span>                
+<span class="c">#: Coulomb</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">Ampere</span> <span class="o">*</span> <span class="n">s</span>                
+<span class="c">#: Volt</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">J</span> <span class="o">/</span> <span class="n">C</span>                
+<span class="c">#: Farad</span>
+<span class="n">F</span> <span class="o">=</span> <span class="n">C</span> <span class="o">/</span> <span class="n">V</span>                
+<span class="c">#: Ohm</span>
+<span class="n">Ohm</span> <span class="o">=</span> <span class="n">V</span> <span class="o">/</span> <span class="n">Ampere</span>              
+<span class="c">#: Siemens</span>
+<span class="n">S</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">Ohm</span>              
+<span class="c">#: Weber</span>
+<span class="n">Wb</span> <span class="o">=</span> <span class="n">J</span> <span class="o">/</span> <span class="n">Ampere</span>        
+<span class="c">#: Tesla</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">Wb</span> <span class="o">/</span> <span class="n">m</span> <span class="o">**</span> <span class="mi">2</span>          
+<span class="c">#: Henry</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">Wb</span> <span class="o">/</span> <span class="n">Ampere</span>         
+<span class="c"># degree C is dangerous, confused with Coulombs</span>
+<span class="c">#degC = K                # Celsius</span>
+<span class="c"># Some of the other units are irrelevant for what I do...</span>
+
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;Hz&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;N&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;Pa&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;J&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;V&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;Ohm&#39;</span><span class="p">)</span>
+
+<span class="c"># Now some official non-SI units, after</span>
+<span class="c"># http://en.wikipedia.org/wiki/Non-SI_units_accepted_for_use_with_SI</span>
+
+<span class="c">#: minute</span>
+<span class="nb">min</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="n">s</span>
+<span class="c">#: hour</span>
+<span class="n">h</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="nb">min</span>
+<span class="c">#: day</span>
+<span class="n">d</span> <span class="o">=</span> <span class="mi">24</span> <span class="o">*</span> <span class="n">h</span>              
+
+<span class="c">#: degree of arc</span>
+<span class="n">degree</span> <span class="o">=</span> <span class="p">(</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>   
+<span class="c">#: arc-minute</span>
+<span class="n">arcmin</span> <span class="o">=</span> <span class="n">degree</span> <span class="o">/</span> <span class="mf">60.0</span>  
+<span class="c">#: arc-second</span>
+<span class="n">arcsec</span> <span class="o">=</span> <span class="n">arcmin</span> <span class="o">/</span> <span class="mf">60.0</span>  
+
+<span class="c">#: hectare</span>
+<span class="n">ha</span> <span class="o">=</span> <span class="mi">10000</span> <span class="o">*</span> <span class="n">m</span> <span class="o">**</span> <span class="mi">2</span>     
+
+<span class="c">#: litre</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">dm</span> <span class="o">**</span> <span class="mi">3</span>             
+
+<span class="c">#: tonne</span>
+<span class="n">t</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">kg</span>            
+
+<span class="c"># Some physics-based units are defined in physics.py, some here</span>
+
+<span class="c">#: Gauss</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_GAUSS</span> <span class="o">*</span> <span class="n">T</span>              
+
+<span class="c">#: bar (prefixed versions available, e.g. mbar = millibar)</span>
+<span class="n">bar</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_BAR</span> <span class="o">*</span> <span class="n">Pa</span>             
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;bar&#39;</span><span class="p">)</span>
+<span class="c">#: atmosphere</span>
+<span class="n">atm</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_STD_ATMOSPHERE</span> <span class="o">*</span> <span class="n">Pa</span>  
+<span class="c">#: Torr</span>
+<span class="n">Torr</span> <span class="o">=</span> <span class="n">_GSL_CONST_MKSA_TORR</span> <span class="o">*</span> <span class="n">Pa</span>           
+<span class="c">#: mmHg</span>
+<span class="n">mmHg</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">_GSL_CONST_MKSA_METER_OF_MERCURY</span> <span class="o">*</span> <span class="n">Pa</span>  
+
+<span class="c"># Viscosity</span>
+<span class="c">#: Poise (prefixed versions available, e.g. cP = centipoise)</span>
+<span class="n">P</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">g</span> <span class="o">/</span> <span class="p">(</span><span class="n">cm</span> <span class="o">*</span> <span class="n">s</span><span class="p">)</span>  
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">)</span>
+
+<span class="c"># Some useful units in chemistry</span>
+<span class="c"># ==============================</span>
+
+<span class="c">#: Angstrom.  See also :func:`.add_amperes_unit`.</span>
+<span class="n">AA</span> <span class="o">=</span> <span class="mf">1e-10</span> <span class="o">*</span> <span class="n">m</span>                             
+
+<span class="n">cal</span> <span class="o">=</span> <span class="mf">4.184</span> <span class="o">*</span> <span class="n">J</span>
+<span class="sd">&quot;&quot;&quot;Thermochemical calorie</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">  The calorie here is the thermochemical calorie (4.184 J), not the</span>
+<span class="sd">  International Steam Table calorie (4.1868 J) used in GSL.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c">#: kilocalorie</span>
+<span class="n">kcal</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">cal</span>
+
+<span class="c">#: molar (prefixed versions available, e.g. mM = millimolar)</span>
+<span class="n">M</span> <span class="o">=</span> <span class="n">mol</span> <span class="o">/</span> <span class="n">L</span>
+<span class="n">_add_prefixes</span><span class="p">(</span><span class="s">&#39;M&#39;</span><span class="p">)</span>
+
+<span class="c">#: cubic centimeter</span>
+<span class="n">cc</span> <span class="o">=</span> <span class="n">cm</span> <span class="o">**</span> <span class="mi">3</span>         
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Units and physical constants v1.0 Reference Guide (DRAFT)</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Patrick Varilly.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

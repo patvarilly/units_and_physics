@@ -1,0 +1,4 @@
+*.pyc
+build
+dist
+units_and_physics.egg-info

@@ -1,0 +1,550 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Units and Physics &mdash; Units and physical constants v1.0 Reference Guide (DRAFT)</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Units and physical constants v1.0 Reference Guide (DRAFT)" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="#">Units and physical constants v1.0 Reference Guide (DRAFT)</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="units-and-physics">
+<h1>Units and Physics<a class="headerlink" href="#units-and-physics" title="Permalink to this headline">¶</a></h1>
+<p>Unit definitions and physical constants for molecular simulations.
+Internally, use nm, amu and ps as base units (like GROMACS), so that
+most numbers in molecular simulations end up close to unity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Version:</th><td class="field-body">1.0</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Date:</th><td class="field-body">June 25, 2012</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="#module-units" title="units"><tt class="xref py py-mod docutils literal"><span class="pre">units</span></tt></a></li>
+<li><a class="reference internal" href="#module-physics" title="physics"><tt class="xref py py-mod docutils literal"><span class="pre">physics</span></tt></a></li>
+</ul>
+<span class="target" id="module-units"></span><div class="section" id="consistent-units-definitions-for-molecular-systems-units">
+<h3>Consistent units definitions for molecular systems (<a class="reference internal" href="#module-units" title="units"><tt class="xref py py-mod docutils literal"><span class="pre">units</span></tt></a>)<a class="headerlink" href="#consistent-units-definitions-for-molecular-systems-units" title="Permalink to this headline">¶</a></h3>
+<p>The internal base units are GROMACS units, which are useful,
+consistent, and internally yield numbers that are close to 1 in
+most atomistic setups:</p>
+<ul class="simple">
+<li>Length = nm</li>
+<li>Mass = amu</li>
+<li>Time = ps (together yield natural energy unit of kJ/mol)</li>
+<li>Current = e / ps</li>
+<li>Temperature = K</li>
+</ul>
+<p>Electrostatic formulas have all the usual SI prefactors.  We don&#8217;t
+bother with the units relating to light (cd and related units) since
+they are mostly irrelevant for condensed matter simulations.</p>
+<p>Initially, we express the SI base units in terms of GROMACS units,
+then derive all other units from them.  For internal convenience,
+we actually use g instead of kg for defining masses.</p>
+<p>Almost all unit definitions also set up the related prefixed units
+from femto-X to tera-X.</p>
+<p>Whenever you read in a unitful quantity from the user, multiply
+it by the relevant units.  For example,</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">myLength</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">nm</span>
+</pre></div>
+</div>
+<p>Whenever you output unitful quantities, divide by the units you want
+to use.  For example,</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&quot;Total energy = </span><span class="si">%.2f</span><span class="s"> kcal/mol&quot;</span> <span class="o">%</span>
+<span class="go">          (E / (units.kcal / units.mol)))</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The unit &#8220;Celsius&#8221; is not defined explicitly to not confuse it with
+&#8220;Coulombs&#8221;.</p>
+</div>
+<div class="section" id="base-units">
+<h4>Base units<a class="headerlink" href="#base-units" title="Permalink to this headline">¶</a></h4>
+<p>All of these can be prefixed with the usual SI prefixes, e.g. <tt class="docutils literal"><span class="pre">nm</span></tt> for
+nanometer.</p>
+<dl class="data">
+<dt id="units.m">
+<tt class="descclassname">units.</tt><tt class="descname">m</tt><em class="property"> = 1000000000.0</em><a class="headerlink" href="#units.m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Meter</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.g">
+<tt class="descclassname">units.</tt><tt class="descname">g</tt><em class="property"> = 6.0221417942167639e+23</em><a class="headerlink" href="#units.g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gram</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.s">
+<tt class="descclassname">units.</tt><tt class="descname">s</tt><em class="property"> = 1000000000000.0</em><a class="headerlink" href="#units.s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Second</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.Ampere">
+<tt class="descclassname">units.</tt><tt class="descname">Ampere</tt><em class="property"> = 6241509.6471204171</em><a class="headerlink" href="#units.Ampere" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ampere</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.K">
+<tt class="descclassname">units.</tt><tt class="descname">K</tt><em class="property"> = 1.0</em><a class="headerlink" href="#units.K" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kelvin</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.mol">
+<tt class="descclassname">units.</tt><tt class="descname">mol</tt><em class="property"> = 6.02214199e+23</em><a class="headerlink" href="#units.mol" title="Permalink to this definition">¶</a></dt>
+<dd><p>mole</p>
+</dd></dl>
+
+<p>By default, the unit for Amperes is <a class="reference internal" href="#units.Ampere" title="units.Ampere"><tt class="xref py py-data docutils literal"><span class="pre">Ampere</span></tt></a>, not <tt class="docutils literal"><span class="pre">A</span></tt> as usual.
+To change this behaviour, call <a class="reference internal" href="#units.add_amperes_unit" title="units.add_amperes_unit"><tt class="xref py py-func docutils literal"><span class="pre">add_amperes_unit()</span></tt></a>.</p>
+<dl class="function">
+<dt id="units.add_amperes_unit">
+<tt class="descclassname">units.</tt><tt class="descname">add_amperes_unit</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/units.html#add_amperes_unit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#units.add_amperes_unit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define <tt class="docutils literal"><span class="pre">A</span></tt> as the unit Ampere.</p>
+<p>By default, this definition is disabled to avoid accidental mixups with
+the unit for Angstroms (<a class="reference internal" href="#units.AA" title="units.AA"><tt class="xref py py-data docutils literal"><span class="pre">AA</span></tt></a>).  This mixup can result in some
+thoroughly puzzling bugs.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="derived-units">
+<h4>Derived units<a class="headerlink" href="#derived-units" title="Permalink to this headline">¶</a></h4>
+<p>Most of these can also be prefixed with the usual SI prefixes, e.g. <tt class="docutils literal"><span class="pre">pN</span></tt>
+for pico-Newton.</p>
+<dl class="data">
+<dt id="units.Hz">
+<tt class="descclassname">units.</tt><tt class="descname">Hz</tt><em class="property"> = 9.9999999999999998e-13</em><a class="headerlink" href="#units.Hz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hertz</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.rad">
+<tt class="descclassname">units.</tt><tt class="descname">rad</tt><em class="property"> = 1.0</em><a class="headerlink" href="#units.rad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radian</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.sr">
+<tt class="descclassname">units.</tt><tt class="descname">sr</tt><em class="property"> = 1.0</em><a class="headerlink" href="#units.sr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Steradian</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.N">
+<tt class="descclassname">units.</tt><tt class="descname">N</tt><em class="property"> = 602214179421.67639</em><a class="headerlink" href="#units.N" title="Permalink to this definition">¶</a></dt>
+<dd><p>Newton</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.Pa">
+<tt class="descclassname">units.</tt><tt class="descname">Pa</tt><em class="property"> = 6.0221417942167641e-07</em><a class="headerlink" href="#units.Pa" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pascal</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.J">
+<tt class="descclassname">units.</tt><tt class="descname">J</tt><em class="property"> = 6.0221417942167637e+20</em><a class="headerlink" href="#units.J" title="Permalink to this definition">¶</a></dt>
+<dd><p>Joule</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.W">
+<tt class="descclassname">units.</tt><tt class="descname">W</tt><em class="property"> = 602214179.4216764</em><a class="headerlink" href="#units.W" title="Permalink to this definition">¶</a></dt>
+<dd><p>Watt</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.C">
+<tt class="descclassname">units.</tt><tt class="descname">C</tt><em class="property"> = 6.2415096471204168e+18</em><a class="headerlink" href="#units.C" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coulomb</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.V">
+<tt class="descclassname">units.</tt><tt class="descname">V</tt><em class="property"> = 96.48533984074092</em><a class="headerlink" href="#units.V" title="Permalink to this definition">¶</a></dt>
+<dd><p>Volt</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.F">
+<tt class="descclassname">units.</tt><tt class="descname">F</tt><em class="property"> = 64688683870758784.0</em><a class="headerlink" href="#units.F" title="Permalink to this definition">¶</a></dt>
+<dd><p>Farad</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.Ohm">
+<tt class="descclassname">units.</tt><tt class="descname">Ohm</tt><em class="property"> = 1.5458654283303944e-05</em><a class="headerlink" href="#units.Ohm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ohm</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.S">
+<tt class="descclassname">units.</tt><tt class="descname">S</tt><em class="property"> = 64688.683870758781</em><a class="headerlink" href="#units.S" title="Permalink to this definition">¶</a></dt>
+<dd><p>Siemens</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.Wb">
+<tt class="descclassname">units.</tt><tt class="descname">Wb</tt><em class="property"> = 96485339840740.922</em><a class="headerlink" href="#units.Wb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weber</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.T">
+<tt class="descclassname">units.</tt><tt class="descname">T</tt><em class="property"> = 9.6485339840740925e-05</em><a class="headerlink" href="#units.T" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tesla</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.H">
+<tt class="descclassname">units.</tt><tt class="descname">H</tt><em class="property"> = 15458654.283303944</em><a class="headerlink" href="#units.H" title="Permalink to this definition">¶</a></dt>
+<dd><p>Henry</p>
+</dd></dl>
+
+</div>
+<div class="section" id="non-si-units">
+<h4>Non-SI units<a class="headerlink" href="#non-si-units" title="Permalink to this headline">¶</a></h4>
+<dl class="data">
+<dt id="units.min">
+<tt class="descclassname">units.</tt><tt class="descname">min</tt><em class="property"> = 60000000000000.0</em><a class="headerlink" href="#units.min" title="Permalink to this definition">¶</a></dt>
+<dd><p>minute</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.h">
+<tt class="descclassname">units.</tt><tt class="descname">h</tt><em class="property"> = 3600000000000000.0</em><a class="headerlink" href="#units.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>hour</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.d">
+<tt class="descclassname">units.</tt><tt class="descname">d</tt><em class="property"> = 86400000000000000.0</em><a class="headerlink" href="#units.d" title="Permalink to this definition">¶</a></dt>
+<dd><p>day</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.degree">
+<tt class="descclassname">units.</tt><tt class="descname">degree</tt><em class="property"> = 0.017453292519943295</em><a class="headerlink" href="#units.degree" title="Permalink to this definition">¶</a></dt>
+<dd><p>degree of arc</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.arcmin">
+<tt class="descclassname">units.</tt><tt class="descname">arcmin</tt><em class="property"> = 0.00029088820866572158</em><a class="headerlink" href="#units.arcmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>arc-minute</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.arcsec">
+<tt class="descclassname">units.</tt><tt class="descname">arcsec</tt><em class="property"> = 4.8481368110953598e-06</em><a class="headerlink" href="#units.arcsec" title="Permalink to this definition">¶</a></dt>
+<dd><p>arc-second</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.ha">
+<tt class="descclassname">units.</tt><tt class="descname">ha</tt><em class="property"> = 1e+22</em><a class="headerlink" href="#units.ha" title="Permalink to this definition">¶</a></dt>
+<dd><p>hectare</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.L">
+<tt class="descclassname">units.</tt><tt class="descname">L</tt><em class="property"> = 9.9999999999999998e+23</em><a class="headerlink" href="#units.L" title="Permalink to this definition">¶</a></dt>
+<dd><p>litre</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.t">
+<tt class="descclassname">units.</tt><tt class="descname">t</tt><em class="property"> = 6.0221417942167636e+29</em><a class="headerlink" href="#units.t" title="Permalink to this definition">¶</a></dt>
+<dd><p>tonne</p>
+</dd></dl>
+
+</div>
+<div class="section" id="physics-units">
+<h4>Physics units<a class="headerlink" href="#physics-units" title="Permalink to this headline">¶</a></h4>
+<p>Some units which are more properly considered physical constants are
+defined in the <a class="reference internal" href="#module-physics" title="physics"><tt class="xref py py-mod docutils literal"><span class="pre">physics</span></tt></a> module.</p>
+<dl class="data">
+<dt id="units.G">
+<tt class="descclassname">units.</tt><tt class="descname">G</tt><em class="property"> = 9.6485339840740927e-09</em><a class="headerlink" href="#units.G" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gauss</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.bar">
+<tt class="descclassname">units.</tt><tt class="descname">bar</tt><em class="property"> = 0.060221417942167642</em><a class="headerlink" href="#units.bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>bar (prefixed versions available, e.g. mbar = millibar)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.atm">
+<tt class="descclassname">units.</tt><tt class="descname">atm</tt><em class="property"> = 0.061019351729901361</em><a class="headerlink" href="#units.atm" title="Permalink to this definition">¶</a></dt>
+<dd><p>atmosphere</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.Torr">
+<tt class="descclassname">units.</tt><tt class="descname">Torr</tt><em class="property"> = 8.0288620697206931e-05</em><a class="headerlink" href="#units.Torr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Torr</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.mmHg">
+<tt class="descclassname">units.</tt><tt class="descname">mmHg</tt><em class="property"> = 8.0288620697206931e-05</em><a class="headerlink" href="#units.mmHg" title="Permalink to this definition">¶</a></dt>
+<dd><p>mmHg</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.P">
+<tt class="descclassname">units.</tt><tt class="descname">P</tt><em class="property"> = 60221.417942167638</em><a class="headerlink" href="#units.P" title="Permalink to this definition">¶</a></dt>
+<dd><p>Poise (prefixed versions available, e.g. cP = centipoise)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="chemistry-units">
+<h4>Chemistry units<a class="headerlink" href="#chemistry-units" title="Permalink to this headline">¶</a></h4>
+<p>Units that pop up regularly in chemistry.</p>
+<dl class="data">
+<dt id="units.AA">
+<tt class="descclassname">units.</tt><tt class="descname">AA</tt><em class="property"> = 0.10000000000000001</em><a class="headerlink" href="#units.AA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angstrom.  See also <a class="reference internal" href="#units.add_amperes_unit" title="units.add_amperes_unit"><tt class="xref py py-func docutils literal"><span class="pre">add_amperes_unit()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.cal">
+<tt class="descclassname">units.</tt><tt class="descname">cal</tt><em class="property"> = 2.5196641267002942e+21</em><a class="headerlink" href="#units.cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thermochemical calorie</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The calorie here is the thermochemical calorie (4.184 J), not the
+International Steam Table calorie (4.1868 J) used in GSL.</p>
+</div>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.kcal">
+<tt class="descclassname">units.</tt><tt class="descname">kcal</tt><em class="property"> = 2.5196641267002945e+24</em><a class="headerlink" href="#units.kcal" title="Permalink to this definition">¶</a></dt>
+<dd><p>kilocalorie</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.M">
+<tt class="descclassname">units.</tt><tt class="descname">M</tt><em class="property"> = 0.60221419900000006</em><a class="headerlink" href="#units.M" title="Permalink to this definition">¶</a></dt>
+<dd><p>molar (prefixed versions available, e.g. mM = millimolar)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="units.cc">
+<tt class="descclassname">units.</tt><tt class="descname">cc</tt><em class="property"> = 1e+21</em><a class="headerlink" href="#units.cc" title="Permalink to this definition">¶</a></dt>
+<dd><p>cubic centimeter</p>
+</dd></dl>
+
+</div>
+</div>
+<span class="target" id="module-physics"></span><div class="section" id="common-physical-constants-in-correct-units-physics">
+<h3>Common physical constants in <a class="reference internal" href="#module-units" title="units"><tt class="xref py py-mod docutils literal"><span class="pre">correct</span> <span class="pre">units</span></tt></a> (<a class="reference internal" href="#module-physics" title="physics"><tt class="xref py py-mod docutils literal"><span class="pre">physics</span></tt></a>)<a class="headerlink" href="#common-physical-constants-in-correct-units-physics" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="fundamental-constants">
+<h4>Fundamental constants<a class="headerlink" href="#fundamental-constants" title="Permalink to this headline">¶</a></h4>
+<dl class="data">
+<dt id="physics.c">
+<tt class="descclassname">physics.</tt><tt class="descname">c</tt><em class="property"> = 299792.45799999998</em><a class="headerlink" href="#physics.c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speed of light in vacuum</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.mu_0">
+<tt class="descclassname">physics.</tt><tt class="descname">mu_0</tt><em class="property"> = 1.9425917892387937e-08</em><a class="headerlink" href="#physics.mu_0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permeability of free space, <span class="math">\(\mu_0\)</span></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.eps_0">
+<tt class="descclassname">physics.</tt><tt class="descname">eps_0</tt><em class="property"> = 0.00057276575662623685</em><a class="headerlink" href="#physics.eps_0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permittivity of free space, <span class="math">\(\epsilon_0\)</span></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.N_A">
+<tt class="descclassname">physics.</tt><tt class="descname">N_A</tt><em class="property"> = 6.02214199e+23</em><a class="headerlink" href="#physics.N_A" title="Permalink to this definition">¶</a></dt>
+<dd><p>Avogadro&#8217;s number</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.kB">
+<tt class="descclassname">physics.</tt><tt class="descname">kB</tt><em class="property"> = 0.0083144724770420932</em><a class="headerlink" href="#physics.kB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boltzmann&#8217;s constant</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.R">
+<tt class="descclassname">physics.</tt><tt class="descname">R</tt><em class="property"> = 0.0083144717296918212</em><a class="headerlink" href="#physics.R" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gas constant (numerically identical to kB in base units!)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="atomic-and-nuclear-physics">
+<h4>Atomic and Nuclear Physics<a class="headerlink" href="#atomic-and-nuclear-physics" title="Permalink to this headline">¶</a></h4>
+<dl class="data">
+<dt id="physics.e">
+<tt class="descclassname">physics.</tt><tt class="descname">e</tt><em class="property"> = 0.99999999999999989</em><a class="headerlink" href="#physics.e" title="Permalink to this definition">¶</a></dt>
+<dd><p>Electron charge</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.eV">
+<tt class="descclassname">physics.</tt><tt class="descname">eV</tt><em class="property"> = 96.48533984074092</em><a class="headerlink" href="#physics.eV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Electron volt</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.amu">
+<tt class="descclassname">physics.</tt><tt class="descname">amu</tt><em class="property"> = 1.0</em><a class="headerlink" href="#physics.amu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atomic mass unit</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.m_e">
+<tt class="descclassname">physics.</tt><tt class="descname">m_e</tt><em class="property"> = 0.00054857989339028882</em><a class="headerlink" href="#physics.m_e" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mass of electron</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.a_0">
+<tt class="descclassname">physics.</tt><tt class="descname">a_0</tt><em class="property"> = 0.052917720830000001</em><a class="headerlink" href="#physics.a_0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bohr radius</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.D">
+<tt class="descclassname">physics.</tt><tt class="descname">D</tt><em class="property"> = 0.020819435181113104</em><a class="headerlink" href="#physics.D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Debye</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Units and Physics</a><ul>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+<li><a class="reference internal" href="#consistent-units-definitions-for-molecular-systems-units">Consistent units definitions for molecular systems (<tt class="docutils literal"><span class="pre">units</span></tt>)</a><ul>
+<li><a class="reference internal" href="#base-units">Base units</a></li>
+<li><a class="reference internal" href="#derived-units">Derived units</a></li>
+<li><a class="reference internal" href="#non-si-units">Non-SI units</a></li>
+<li><a class="reference internal" href="#physics-units">Physics units</a></li>
+<li><a class="reference internal" href="#chemistry-units">Chemistry units</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#common-physical-constants-in-correct-units-physics">Common physical constants in <tt class="docutils literal"><span class="pre">correct</span> <span class="pre">units</span></tt> (<tt class="docutils literal"><span class="pre">physics</span></tt>)</a><ul>
+<li><a class="reference internal" href="#fundamental-constants">Fundamental constants</a></li>
+<li><a class="reference internal" href="#atomic-and-nuclear-physics">Atomic and Nuclear Physics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="#">Units and physical constants v1.0 Reference Guide (DRAFT)</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Patrick Varilly.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
